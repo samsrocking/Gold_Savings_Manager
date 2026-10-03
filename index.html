@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gold Savings Manager</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#b8862b">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+:root{--bg:#fdf6e7;--cd:#f6e7c6;--ac:#b8862b;--dk:#4a3416;--md:#8a6a33;--in:#fffaf0;--bt:#e2bd6b;--bd:#d9bd82;--ln:#ead6a6}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--dk);font:13px system-ui,sans-serif}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:560px;margin:auto}
+.hd{text-align:center;padding:6px 0 5px;background:var(--cd);border-bottom:2px solid var(--ac)}
+.lg{width:38px;height:38px;border-radius:50%;margin:0 auto 3px;overflow:hidden;background:#fff;border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;color:var(--ac)}
+.lg img{width:100%;height:100%;object-fit:cover}
+h1{font:700 16px Georgia,serif}
+h2{font:700 14.5px Georgia,serif;margin:2px 0 6px;text-align:center}h3{font:700 13.5px Georgia,serif;margin-bottom:6px;text-align:center}
+main{flex:1;min-height:0;overflow:auto;padding:8px 12px;display:flex;flex-direction:column}
+.sc{flex:1;min-height:60px;overflow:auto;margin-top:4px}
+.m,small{color:var(--md);font-size:11.5px;line-height:1.45}
+label{display:block;margin:7px 0 3px;font-size:11.5px;color:var(--md)}
+input,select,textarea{width:100%;padding:8px 10px;border-radius:9px;border:1px solid var(--bd);background:var(--in);color:var(--dk);font-size:13px}
+.b{display:block;width:100%;margin-top:9px;padding:10px;border:0;border-radius:11px;background:var(--bt);color:var(--dk);font-weight:700;font-size:13px;text-align:center;text-decoration:none;flex:none}
+.b.o{background:none;border:1px solid var(--ac)}
+.s{padding:6px 10px;border:0;border-radius:9px;background:var(--ac);color:#fff;font-weight:600;font-size:11.5px;flex:none}
+.r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--ln)}
+.r.l{justify-content:flex-start;align-items:flex-start;font-size:12.5px}.r.c{font-size:11px;padding:5px 0}
+.am{min-width:74px;white-space:nowrap}
+.hs{overflow-x:auto;white-space:nowrap;scrollbar-width:none;min-width:0}.hs::-webkit-scrollbar{display:none}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}.cl{display:flex;flex-direction:column;gap:8px;min-width:0}
+.tl{background:var(--cd);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px;min-width:0}.tl .s{width:100%;margin-top:3px}
+.s.o{background:none;border:1px solid var(--ac);color:var(--dk)}
+.pa{border-bottom:1px solid var(--ln)}.pa .r{border:0;padding:12px 0}.pd{padding:0 0 10px;font-size:12px;color:var(--md);display:flex;flex-direction:column;gap:3px}
+.tt>div{overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.ar{min-width:80px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ac{background:var(--cd);border-radius:12px;padding:6px 10px 10px;margin-bottom:8px}.ac .r{border:0}.ac .s{width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:left;background:var(--cd);border-radius:12px;padding:8px;margin-bottom:6px;font-size:11px;flex:none}.tt b{font-size:14px;display:block;text-align:center}.lr{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:12.5px}.tt .lr b{display:inline;font-size:12.5px;text-align:right}.gt{border-top:1px solid var(--bd);margin-top:4px;padding-top:6px;font-weight:700}.ver{text-align:center;font-size:10.5px;color:var(--md);padding:4px 0}.nv svg{display:block;margin:auto}.th{text-align:center;color:var(--md)}.hr2{position:relative;padding:0 62px}.hr2 .s{position:absolute;right:0;top:0}
+.nv{display:flex;gap:10px;padding:7px 12px calc(7px + env(safe-area-inset-bottom));background:var(--cd);border-top:2px solid var(--ac)}
+.nv button{flex:1;padding:9px;border:1px solid var(--ac);border-radius:11px;background:var(--in);color:var(--dk);font-weight:700;font-size:13px}
+.bk{position:fixed;inset:0;background:rgba(74,52,22,.35)}
+.sh{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:auto;background:var(--in);border-radius:18px 18px 0 0;border-top:3px solid var(--ac);padding:12px 12px calc(12px + env(safe-area-inset-bottom));max-height:92dvh;overflow:auto}
+.hm{display:flex;flex-direction:column;justify-content:center;flex:1}.hm .b{padding:13px;font-size:15px}
+</style></head><body><div id="app"></div>
+<script>
+const K='bj_savings_v2',$=i=>document.getElementById(i),z=n=>String(n).padStart(2,'0');
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())};
+const fd=s=>s?s.split('-').reverse().join('-'):'';
+const ph=s=>{const d=String(s||'').replace(/\D/g,'');return d.length>10?d.slice(-10):d};
+let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}
+D=D||{c:[],a:[],p:[],n:1,g:1,s:1,set:{shop:'',addr:'',mob:'',theme:'gold',logo:'',gn:'Gold Savings Scheme',sn:'Small Savings Scheme',ten:12}};D.ct=D.ct||[];
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){alert('Could not save on this phone. Export a backup now.')}};
+let V={p:D.set.shop?'home':'setup'},H=[],S=null,Q='',F=today(),T=today(),AO=today(),FT='all',FS='all';
+const go=(p,id,x)=>{H.push(V);V={p:p,id:id,x:x};S=null;render()};
+const rep=(p,id,x)=>{V={p:p,id:id,x:x};S=null;render()};
+const bk=()=>{V=H.pop()||{p:'home'};S=null;render()};
+const hm=()=>{H=[];V={p:D.set.shop?'home':'setup'};S=null;render()};
+const cust=id=>D.c.find(x=>x.id==id),acc=id=>D.a.find(x=>x.id==id);
+const sname=a=>a.t=='g'?D.set.gn:D.set.sn,sn2=a=>a.t=='g'?'GSS':'SS';
+const mig=()=>{D.a.forEach(a=>{if(a.t=='s'&&/^SS\d{1,3}$/.test(a.no))a.no='SS'+a.no.slice(2).padStart(4,'0')});if(D.set.addr==null)D.set.addr='No. 12, Venkatraman Salai, Choolaipaalam, M.G.R Nagar, Chennai 600 078';if(D.set.mob==null)D.set.mob='9840042311'};mig();
+const sgn=p=>p.k=='out'?-p.m:p.m;
+const sum=(id,k)=>D.p.filter(x=>x.a==id&&x.k==k).reduce((s,p)=>s+p.m,0);
+const bl=(id,d)=>D.p.filter(p=>p.a==id&&(!d||p.d<=d)).reduce((s,p)=>s+sgn(p),0);
+const ap=id=>D.p.filter(x=>x.a==id).sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:b.id-a.id);
+const inC=c=>c.vc||D.ct.some(x=>x.phone==c.phone);
+const pickOK=()=>!!(window.isSecureContext&&navigator.contacts&&navigator.contacts.select);
+const opt=(v,A)=>A.map(x=>'<option value="'+x[0]+'"'+(x[0]==v?' selected':'')+'>'+x[1]+'</option>').join('');
+function smsLink(a,t){return'sms:'+cust(a.c).phone+'?body='+encodeURIComponent(t)}
+function head(){const s=D.set;return'<div class=hd><div class=lg>'+(s.logo?'<img src="'+s.logo+'">':'✦')+'</div><h1>'+esc(s.shop||'Gold Savings Manager')+'</h1></div>'}
+async function saveFile(name,text,type){
+ try{const dl=window.claude?await claude.use('downloads'):null;
+  if(dl){await dl.save({filename:name,data:text});return true}}
+ catch(e){if(e&&e.code=='declined')return false;if(e&&e.code=='rejected_extension'){alert('This file type cannot be saved from the online page. Use the downloaded app file instead.');return false}}
+ const u=URL.createObjectURL((text instanceof Blob?text:new Blob([text],{type:type||'text/plain'}))),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();return true}
+
+function vHome(){return'<div class=hm><button class=b onclick="go(\'srch\')">Customer</button><button class=b onclick="go(\'days\')">Day&#39;s Collection</button><button class=b onclick="go(\'accts\')">Accounts</button><button class=b onclick="go(\'sets\')">⚙ Settings</button></div><div class=ver>Gold Savings Manager · Version '+VER+'</div>'}
+function vSetup(){return'<h2>Welcome</h2><p class=m style="text-align:center">Please fill in your shop details to start using the app.</p><label>Shop name</label><input id=u1><label>Shop address (for printouts)</label><input id=u2><label>Shop mobile</label><input id=u3 type=tel inputmode=numeric><button class=b onclick="saveSetup()">Save and continue</button>'}
+function saveSetup(){const n=$('u1').value.trim();if(!n)return alert('Please enter the shop name');D.set.shop=n;D.set.addr=$('u2').value.trim();D.set.mob=ph($('u3').value);save();hm()}
+function rsHtml(){const q=Q.trim().toLowerCase();if(!q)return'<p class=m>Type a name or mobile number to search.</p>';
+ const L=srt(D.c.filter(c=>(c.name+' '+c.phone).toLowerCase().includes(q)),q,c=>c.name);
+ let h=L.length?L.map(c=>'<div class=r><div><b>'+esc(c.name)+'</b><br><small>'+esc(c.phone||'No mobile')+'</small></div><button class=s onclick="go(\'cust\','+c.id+')">Show A/c</button></div>').join(''):'<p class=m>Customer not found.</p><button class=b onclick="go(\'newc\')">Add New</button>';
+ const C=srt(D.ct.filter(x=>(x.name+' '+x.phone).toLowerCase().includes(q)&&!D.c.some(c=>c.phone==x.phone)),q,x=>x.name).slice(0,20);
+ if(C.length)h+='<p class=m style="margin-top:8px">From contacts</p>'+C.map(x=>'<div class=r><div><b>'+esc(x.name)+'</b><br><small>'+x.phone+'</small></div><button class=s onclick="fromCt('+D.ct.indexOf(x)+')">Add</button></div>').join('');
+ return h}
+function vSrch(){return'<h2>Customer</h2><input id=q placeholder="Name or mobile number" value="'+esc(Q)+'" oninput="Q=this.value;$(\'rs\').innerHTML=rsHtml()"><div class=sc id=rs>'+rsHtml()+'</div><button class="b o" onclick="syncC()">Sync Contacts ('+D.ct.length+')</button>'+(D.ct.length?'':'<small style="display:block;text-align:center;margin-top:4px">On the phone: Contacts app → Settings → Export → save the .vcf file, then choose it here.</small>')+'<input type=file id=vf hidden accept=".vcf,text/vcard,text/x-vcard,text/plain" onchange="impVcf(event)">'}
+async function syncC(){if(pickOK()){try{const r=await navigator.contacts.select(['name','tel'],{multiple:true}),have=new Set(D.ct.map(x=>x.phone));let k=0;
+ r.forEach(x=>{const n=(x.name||[])[0],p=ph((x.tel||[])[0]);if(n&&p.length>=10&&!have.has(p)){have.add(p);D.ct.push({name:n,phone:p});k++}});save();alert(k+' new contacts imported');render()}catch(e){}}else $('vf').click()}
+function addFromCt(n,t){t=ph(t);if(!n&&!t)return;const c=t&&D.c.find(x=>x.phone==t);if(c)go('cust',c.id);else go('newc',0,{n:n||'',p:t})}
+const fromCt=i=>addFromCt(D.ct[i].name,D.ct[i].phone);
+async function pickC(){try{const r=await navigator.contacts.select(['name','tel'],{multiple:false});if(r&&r[0])addFromCt((r[0].name||[])[0]||'',(r[0].tel||[])[0]||'')}catch(e){}}
+function cform(c){c=c||{};return'<label>Name</label><input id=cn value="'+esc(c.name)+'"><label>Mobile number (optional)</label><input id=cp type=tel inputmode=numeric value="'+esc(c.phone)+'"><label>Address</label><textarea id=ca rows=2>'+esc(c.addr)+'</textarea>'}
+function readC(){const n=$('cn').value.trim(),raw=$('cp').value.trim(),p=ph(raw);
+ if(!n){alert('Enter the customer name');return null}
+ if(raw&&p.length<10){alert('Enter a valid 10-digit mobile number, or leave it empty');return null}
+ return{name:n,phone:p,addr:$('ca').value.trim()}}
+function vNewc(){const x=V.x,d=/^[\d\s+]+$/.test(Q.trim());return'<h2>Add New Customer</h2>'+cform(x?{name:x.n,phone:x.p}:(d?{phone:Q.trim()}:{name:Q.trim()}))+'<button class=b onclick="addC()">Save customer</button>'}
+function addC(){const o=readC();if(!o)return;
+ if(o.phone&&D.c.some(c=>c.phone==o.phone)&&!confirm('This mobile number already exists. Add anyway?'))return;
+ if(V.x&&V.x.p&&o.phone==V.x.p)o.vc=1;o.id=D.n++;D.c.push(o);save();Q='';rep('cust',o.id)}
+function vEditc(){return'<h2>Edit Customer</h2>'+cform(cust(V.id))+'<button class=b onclick="saveC()">Save changes</button>'}
+function saveC(){const o=readC();if(!o)return;const c=cust(V.id);
+ if(o.phone&&o.phone!=c.phone&&D.c.some(x=>x.id!=c.id&&x.phone==o.phone)&&!confirm('Another customer has this number. Save anyway?'))return;
+ if(o.phone!=c.phone)c.vc=0;Object.assign(c,o);save();bk()}
+async function vcf(id){const c=cust(id),t='BEGIN:VCARD\r\nVERSION:3.0\r\nFN:'+c.name+'\r\nN:;'+c.name+';;;\r\nTEL;TYPE=CELL:'+c.phone+'\r\nEND:VCARD\r\n';
+ if(await saveFile((c.name.replace(/[^\w ]/g,'').trim()||'contact')+'.vcf',t,'text/vcard')){c.vc=1;save();render()}}
+const tiles=A=>{const G=A.filter(a=>a.t=='g'),M=A.filter(a=>a.t=='s'),col=L=>'<div class=cl>'+L.map(card).join('')+'</div>';return'<div class=tg>'+(G.length?col(G)+col(M):col(M)+'<div></div>')+'</div>'};
+function card(a){const g=a.t=='g',i=sum(a.id,'in'),o=sum(a.id,'out'),L=t=>'<div class=hs style="font-size:12.5px">'+t+'</div>';
+ return'<div class=tl onclick="go(\'acc\','+a.id+')"><div class=hs><b>'+a.no+'</b> · '+sn2(a)+(a.st!='open'?' <em>('+a.st+')</em>':'')+'</div>'+(g?L('Amt Rd <b>'+inr(i)+'</b>'):L('A/c Bal <b>'+inr(i-o)+'</b>'))+(a.st=='open'?'<button class=s onclick="event.stopPropagation();pay('+a.id+')">Collect Payment</button>':'')+'</div>'}
+function vCust(){const c=cust(V.id),A=D.a.filter(a=>a.c==c.id&&a.st=='open'),P=D.a.filter(a=>a.c==c.id&&a.st!='open');
+ return'<div class=hr2><h2>'+esc(c.name)+'</h2><button class=s onclick="go(\'editc\','+c.id+')">Edit</button></div><p class="m hs">'+esc(c.phone||'No mobile number')+' · '+esc(c.addr||'No address')+'</p>'
+ +(c.phone?(inC(c)?'<small>✓ Saved in contacts</small>':'<div><button class=s style="margin-top:6px" onclick="vcf('+c.id+')">Save to Contacts</button></div>'):'')
+ +'<h3 style="margin-top:8px">Accounts</h3><div class=sc>'+(A.length?tiles(A):'<p class=m>No active account.</p>')+'</div>'+(P.length?'<button class="b o" onclick="go(\'past\','+c.id+')">Past Accounts ('+P.length+')</button>':'')+'<button class=b onclick="go(\'newa\','+c.id+')">Open Account</button>'}
+function vPast(){const c=cust(V.id),P=D.a.filter(a=>a.c==c.id&&a.st!='open').sort((a,b)=>(b.cd||'')>(a.cd||'')?1:(b.cd||'')<(a.cd||'')?-1:b.id-a.id);
+ return'<h2>Past Accounts · '+esc(c.name)+'</h2><div class=sc>'+(P.length?P.map(a=>{const o=V.x==a.id,L=t=>'<div class=hs>'+t+'</div>';
+  return'<div class=pa><div class=r onclick="V.x='+(o?0:a.id)+';render()"><b>'+a.no+'</b><span>'+(a.cd?fd(a.cd):'—')+' &nbsp;'+(o?'▴':'▾')+'</span></div>'
+  +(o?'<div class=pd>'+L(sn2(a)+' · '+(a.st=='closed'?'Closed':'Transferred'))+L('Reason: '+esc(a.cr||'—')+(a.to?' → '+esc(a.to):''))+L('Received '+inr(sum(a.id,'in'))+' · Paid '+inr(sum(a.id,'out')))+L('Balance <b>'+inr(bl(a.id))+'</b>')+'<button class="s o" style="width:auto;align-self:flex-start;margin-top:4px" onclick="go(\'acc\','+a.id+')">View transactions</button></div>':'')+'</div>'}).join(''):'<p class=m>No past accounts.</p>')+'</div>'}
+function vNewa(){
+ if(!V.x)return'<h2>Open Account</h2><p class=m>Choose a scheme</p><button class=b onclick="V.x=\'g\';render()">'+esc(D.set.gn)+'<br><small>Fixed amount · '+D.set.ten+' months</small></button><button class=b onclick="V.x=\'s\';render()">'+esc(D.set.sn)+'<br><small>Receipt &amp; payment · no fixed amount</small></button>';
+ const g=V.x=='g';return'<h2>'+esc(g?D.set.gn:D.set.sn)+'</h2>'+(g?'<label>Fixed monthly amount (₹)</label><input id=am type=number inputmode=numeric>':'')+'<label>Start date</label><input id=as type=date value="'+today()+'"><button class=b onclick="addA()">Open Account</button>'}
+function addA(){const g=V.x=='g',m=g?+$('am').value:0;
+ if(!$('as').value||(g&&!(m>0)))return alert('Enter '+(g?'the monthly amount and ':'')+'the start date');
+ const no=g?'GS'+String(D.g++).padStart(4,'0'):'SS'+String(D.s++).padStart(4,'0');
+ D.a.push({id:D.n++,no:no,t:V.x,c:V.id,s:$('as').value,m:m,st:'open'});save();rep('cust',V.id)}
+function vAcc(){const a=acc(V.id),c=cust(a.c),g=a.t=='g',L=ap(a.id),i=sum(a.id,'in'),o=sum(a.id,'out');
+ return'<div class=hr2><h2>'+a.no+' · '+sn2(a)+'</h2><button class=s onclick="prt('+a.id+')">Print PDF</button></div><p class="m hs">'+esc(c.name)+' · '+esc(c.phone||'No mobile')+'<br>'+(g?'₹'+a.m+'/month · '+D.p.filter(x=>x.a==a.id&&x.k=='in').length+'/'+D.set.ten+' paid · ':'')+'Received '+inr(i)+(g?'':' · Paid '+inr(o)+' · Bal '+inr(i-o))
+ +(a.st!='open'?'<br><b>'+a.st.toUpperCase()+' on '+fd(a.cd)+'</b> · '+esc(a.cr)+(a.to?' → '+esc(a.to):''):'')+'</p><h3 style="margin-top:8px">History</h3><div class=sc>'
+ +(L.length?L.map(p=>'<div class="r l c"><b class=am>'+(p.k=='out'?'−':'+')+inr(p.m)+'</b><div>'+fd(p.d)+' · '+p.md+(p.n?' · '+esc(p.n):'')+'</div></div>').join(''):'<p class=m>No payments yet.</p>')+'</div>'
+ +(a.st=='open'?'<button class=b onclick="pay('+a.id+')">Collect Payment</button><div class=two>'+(g?'':'<button class="b o" onclick="tr('+a.id+')">Transfer Account</button>')+'<button class="b o" style="'+(g?'grid-column:1/3':'')+'" onclick="cl('+a.id+')">Close Account</button></div>':'')}
+function vAccts(){const L=D.a.filter(a=>(FT=='all'||a.t==FT)&&(FS=='all'||(FS=='act')==(a.st=='open')));
+ const P=D.p.filter(p=>p.d<=AO),by=t=>{const ids=new Set(D.a.filter(a=>a.t==t).map(a=>a.id));return P.filter(p=>ids.has(p.a)).reduce((s,p)=>s+sgn(p),0)},g=by('g'),sm=by('s'),ft=L.reduce((s,a)=>s+bl(a.id,AO),0);
+ return'<div class=r style="border:0;padding:0 0 6px"><h2 style="margin:0;text-align:left">Accounts</h2><label style="margin:0;display:flex;align-items:center;gap:6px;white-space:nowrap">As on <input type=date value="'+AO+'" onchange="AO=this.value||today();render()" style="width:auto;padding:5px;font-size:13px"></label></div>'
+ +'<div class=tt style="display:block"><div class=lr><span>'+esc(D.set.gn)+'</span><b>'+inr(g)+'</b></div><div class=lr><span>'+esc(D.set.sn)+'</span><b>'+inr(sm)+'</b></div><div class="lr gt"><span>Grand Total</span><b>'+inr(g+sm)+'</b></div></div>'
+ +'<div class=two><select onchange="FT=this.value;render()">'+opt(FT,[['all','All types'],['g','Gold'],['s','Small']])+'</select><select onchange="FS=this.value;render()">'+opt(FS,[['all','Active &amp; closed'],['act','Active'],['cls','Closed']])+'</select></div>'
+ +'<div class=r style="border:0;padding:6px 0 0"><small>'+L.length+' account(s) · balance '+inr(ft)+'</small><button class=s onclick="ex(\'accts\')">Export</button></div><div class=sc>'
+ +(L.map(a=>{const c=cust(a.c);return'<div class="r c" onclick="go(\'acc\','+a.id+')"><div style="flex:1;min-width:0"><div class=hs><b>'+a.no+'</b> · '+esc(c.name)+' · '+esc(c.phone||'No mobile')+'</div><div class=hs>'+sn2(a)+' · '+(a.st=='open'?'Active':a.st=='closed'?'Closed':'Transferred')+(a.t=='g'?' · ₹'+a.m+'/mo':'')+'</div><div class=hs style="display:flex;justify-content:space-between;gap:14px"><span>Received '+inr(sum(a.id,'in'))+'</span><span>Balance '+inr(bl(a.id,AO))+'</span></div></div><span>›</span></div>'}).join('')||'<p class=m>No accounts.</p>')+'</div>'}
+const pay=id=>{S={t:'pay',a:id};render()},cl=id=>{S={t:'cl',a:id};render()},tr=id=>{S={t:'tr',a:id};render()};
+function shHtml(){if(!S)return'';let h='<div class=bk onclick="S=null;render()"></div><div class=sh>';
+ const cn='<button class="b o" onclick="S=null;render()">Cancel</button>';
+ if(S.t=='pay'){const a=acc(S.a),g=a.t=='g';
+  h+='<h3>Collect Payment · '+a.no+'</h3>'+(g?'':'<select id=pk><option value=in>Receipt (from customer)</option><option value=out>Payment (to customer)</option></select>')
+  +'<div class=two><div><label>Amount (₹)</label><input id=pm type=number inputmode=numeric value="'+(g?a.m:'')+'"></div><div><label>Date</label><input id=pd type=date value="'+today()+'"></div></div><label>Mode</label><select id=pmd><option>Cash</option><option>UPI</option><option>Card</option><option>Bank Transfer</option></select><button class=b onclick="savePay()">Save</button>'+cn}
+ else if(S.t=='cl'){const a=acc(S.a),b=bl(a.id);
+  h+='<h3>Close Account · '+a.no+'</h3><div class=two><div><label>Paid to customer (₹)</label><input value="'+b+'" readonly></div><div><label>Mode</label><select id=pmd><option>Cash</option><option>UPI</option><option>Card</option><option>Bank Transfer</option></select></div></div><small>Available balance '+inr(b)+(b>0?' is paid out and recorded in Days Collection.':'')+'</small><label>Reason for closure</label><textarea id=rr rows=2></textarea><button class=b onclick="doCl()">Confirm closure</button>'+cn}
+ else if(S.t=='tr'){const a=acc(S.a),b=bl(a.id),G=D.a.filter(x=>x.c==a.c&&x.t=='g'&&x.st=='open');
+  if(!G.length)h+='<h3>Transfer · '+a.no+'</h3><p class=m>This customer has no active gold savings account. Open one first.</p>'+cn;
+  else{const g=G.find(x=>x.id==S.g)||G[0];
+   h+='<h3>Transfer to Gold Savings</h3><label>Gold savings account</label><select id=tg onchange="S.g=this.value;render()">'+G.map(x=>'<option value='+x.id+(x.id==g.id?' selected':'')+'>'+x.no+' · ₹'+x.m+'/month</option>').join('')+'</select><div class=two><div><label>Transfer amount (₹)</label><input value="'+g.m+'" readonly></div><div><label>Available balance</label><input value="'+b+'" readonly></div></div><small>The amount equals the monthly instalment of '+g.no+'.</small>'
+   +(b<g.m?'<p class=m style="color:#a33">Balance is less than the instalment, so transfer is not possible.</p>':'<button class=b onclick="doTr()">Confirm transfer</button>')+cn}}
+
+ else if(S.t=='ex')h+='<h3>Export report</h3><button class=b onclick="doEx(\'xlsx\')">Excel (.xlsx)</button><button class=b onclick="doEx(\'pdf\')">PDF</button>'+cn
+ else if(S.t=='exit')h+='<h3>Exit Gold Savings Manager?</h3><p class=m style="text-align:center">Do you want to exit the app?</p><div class=two><button class="b o" onclick="S=null;render()">Stay</button><button class=b onclick="exitApp()">Exit</button></div>'
+ else{const a=acc(S.a);h+='<h3>Saved ✓</h3><p class=m>'+esc(S.txt)+'</p>'+(cust(a.c).phone?'<a class=b href="'+smsLink(a,S.txt)+'">Send SMS</a>':'<p class=m>No mobile number saved for this customer, so no SMS can be sent.</p>')+'<button class="b o" onclick="S=null;render()">Done</button>'}
+ return h+'</div>'}
+function savePay(){const a=acc(S.a),m=+$('pm').value,k=a.t=='s'&&$('pk').value=='out'?'out':'in',d=$('pd').value;
+ if(!(m>0)||!d)return alert('Enter the amount and date');
+ if(k=='out'&&m>sum(a.id,'in')-sum(a.id,'out')&&!confirm('This is more than the balance. Continue?'))return;
+ if(a.t=='g'&&D.p.filter(x=>x.a==a.id&&x.k=='in').length>=D.set.ten&&!confirm('All instalments are already received. Add another?'))return;
+ D.p.push({id:D.n++,a:a.id,d:d,m:m,k:k,md:$('pmd').value});save();
+ S={t:'done',a:a.id,txt:'Payment '+(k=='out'?'paid':'received')+' against '+a.no+' on '+fd(d)+'. Thank you.'};render()}
+function doCl(){const a=acc(S.a),r=$('rr').value.trim(),b=bl(a.id);
+ if(!r)return alert('Please enter the reason for closure');
+ if(b>0)D.p.push({id:D.n++,a:a.id,d:today(),m:b,k:'out',md:$('pmd').value,n:'Closure'});
+ a.st='closed';a.cd=today();a.cr=r;save();
+ S={t:'done',a:a.id,txt:'Your '+sname(a)+' account '+a.no+' has been closed on '+fd(a.cd)+'.'+(b>0?' Rs '+b+' paid.':'')+' Thank you.'};render()}
+function doTr(){const a=acc(S.a),G=acc($('tg').value),d=today();
+ if(bl(a.id)<G.m)return alert('Balance is less than the monthly instalment');
+ if(D.p.filter(x=>x.a==G.id&&x.k=='in').length>=D.set.ten&&!confirm('All instalments of '+G.no+' are already received. Add another?'))return;
+ D.p.push({id:D.n++,a:a.id,d:d,m:G.m,k:'out',md:'Transfer',n:'to '+G.no});D.p.push({id:D.n++,a:G.id,d:d,m:G.m,k:'in',md:'Transfer',n:'from '+a.no});save();
+ S={t:'done',a:a.id,txt:'Rs '+G.m+' transferred from '+a.no+' to '+G.no+' on '+fd(d)+'. Thank you.'};render()}
+function ents(L,hist){return L.length?'<div class=sc>'+L.map(p=>{const a=acc(p.a),c=cust(a.c);return'<div class="r'+(hist?' c':'')+'"><div class=hs style="flex:1">'+(hist?fd(p.d)+' · ':'')+esc(c.name)+' · '+a.no+' · '+p.md+(p.n?' · '+esc(p.n):'')+'</div><b class=ar>'+(p.k=='out'?'−':'+')+inr(p.m)+'</b></div>'}).join('')+'</div>':'<p class=m>No entries.</p>'}
+function tot(L){const i=L.filter(p=>p.k=='in').reduce((s,p)=>s+p.m,0),o=L.filter(p=>p.k=='out').reduce((s,p)=>s+p.m,0);
+ return'<div class=tt><div><div class=th>Received</div><b>'+inr(i)+'</b></div><div><div class=th>Paid</div><b>'+inr(o)+'</b></div><div><div class=th>Net</div><b>'+inr(i-o)+'</b></div></div>'}
+function vDays(){const L=D.p.filter(p=>p.d==today()).sort((a,b)=>b.id-a.id);return'<h2>Day&#39;s Collection · '+fd(today())+'</h2>'+tot(L)+ents(L,0)+'<div class=two><button class=b onclick="go(\'hist\')">Payment History</button><button class="b o" onclick="ex(\'days\')">Export</button></div>'}
+function vHist(){const L=D.p.filter(p=>p.d>=F&&p.d<=T).sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:b.id-a.id);
+ return'<h2>Payment History</h2><div class=two><div><label>From</label><input type=date value="'+F+'" onchange="F=this.value;render()"></div><div><label>To</label><input type=date value="'+T+'" onchange="T=this.value;render()"></div></div>'+tot(L)+ents(L,1)+'<button class="b o" onclick="ex(\'hist\')">Export</button>'}
+function vSets(){const s=D.set;
+ return'<h2>Settings</h2><label>Shop name</label><input id=s1 value="'+esc(s.shop)+'"><label>Shop address (for printouts)</label><input id=s5 value="'+esc(s.addr)+'"><label>Shop mobile</label><input id=s6 value="'+esc(s.mob)+'"><label>App colour theme</label><select id=s7 onchange="D.set.theme=this.value;save();applyTheme()">'+Object.keys(TH).map(k=>'<option value='+k+(k==(s.theme||'gold')?' selected':'')+'>'+TH[k][0]+(k=='gold'?' (default)':'')+'</option>').join('')+'</select><div class=two><div><label>Gold scheme name</label><input id=s2 value="'+esc(s.gn)+'"></div><div><label>Small scheme name</label><input id=s3 value="'+esc(s.sn)+'"></div></div><div class=two><div><label>Gold tenure (months)</label><input id=s4 type=number value="'+s.ten+'"></div><div><label>Shop logo</label><input type=file accept="image/*" onchange="logo(event)"></div></div><button class=b onclick="saveS()">Save settings</button>'
+ +'<label class="b o" style="margin-top:10px">Import contacts file (.vcf) · '+D.ct.length+' loaded<input type=file hidden accept=".vcf,text/vcard,text/x-vcard,text/plain" onchange="impVcf(event)"></label>'
+ +'<div class=two><button class="b o" onclick="exp()">Export backup</button><label class="b o" style="margin:10px 0 0">Restore<input type=file hidden accept=".json" onchange="imp(event)"></label></div>'}
+function saveS(q){const t=+$('s4').value;if(!$('s1').value.trim()||!(t>0))return alert('Enter the shop name and tenure');
+ D.set.shop=$('s1').value.trim();D.set.addr=$('s5').value.trim();D.set.mob=$('s6').value.trim();D.set.gn=$('s2').value.trim()||'Gold Savings Scheme';D.set.sn=$('s3').value.trim()||'Small Savings Scheme';D.set.ten=t;save();if(!q)bk()}
+function logo(e){const f=e.target.files[0];if(!f)return;saveS(1);const r=new FileReader();
+ r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const s=Math.min(im.width,im.height);
+ c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,128,128);D.set.logo=c.toDataURL('image/jpeg',.85);save();render()};im.src=r.result};r.readAsDataURL(f)}
+function impVcf(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{const have=new Set(D.ct.map(x=>x.phone));let k=0;
+  r.result.split(/BEGIN:VCARD/i).slice(1).forEach(b=>{const n=(b.match(/^FN[^:\r\n]*:(.*)$/im)||[])[1],t=(b.match(/^TEL[^:\r\n]*:(.*)$/im)||[])[1],p=ph(t);
+   if(n&&p.length>=10&&!have.has(p)){have.add(p);D.ct.push({name:n.trim(),phone:p});k++}});
+  save();alert(k+' new contacts imported');render()};r.readAsText(f)}
+function exp(){saveFile('savings-backup-'+today()+'.json',JSON.stringify(D),'application/json')}
+function imp(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.c||!d.a||!d.p||!d.set)throw 0;if(confirm('Replace ALL data on this phone with this backup?')){D=d;D.ct=D.ct||[];mig();applyTheme();save();hm()}}catch(x){alert('This is not a valid backup file')}};r.readAsText(f)}
+
+const ex=k=>{S={t:'ex',k:k};render()},prt=id=>{const a=acc(id);saveFile('Statement-'+a.no+'.pdf',stmt(a))};
+const fmt=n=>Number(n||0).toLocaleString('en-IN');
+const san=t=>String(t==null?'':t).replace(/₹/g,'Rs.').replace(/[^\x20-\x7E]/g,'?');
+const pd=(t,w)=>san(t).slice(0,w).padEnd(w),pr=(t,w)=>san(t).slice(-w).padStart(w);
+const wr=(t,w)=>{t=san(t);const o=[];while(t.length>w){let i=t.lastIndexOf(' ',w);if(i<10)i=w;o.push(t.slice(0,i));t=t.slice(i).trimStart()}o.push(t);return o};
+const rv=(id,k,d)=>D.p.filter(p=>p.a==id&&p.k==k&&(!d||p.d<=d)).reduce((s,p)=>s+p.m,0);
+const stt=a=>a.st=='open'?'Active':a.st=='closed'?'Closed':'Transferred';
+const CW=96;
+function hdr(t,sub){const s=D.set,L=[{t:san(s.shop).toUpperCase(),b:1,sz:15}];if(s.addr)wr(s.addr,CW).forEach(x=>L.push({t:x}));if(s.mob)L.push({t:'Mobile: '+san(s.mob)});L.push({t:'='.repeat(CW)},{t:t,b:1,sz:12});sub.forEach(x=>L.push({t:x}));L.push({t:''});return L}
+function table(cols,rows,tots){const L=[],fv=v=>typeof v=='number'?fmt(v):v,line=r=>r.map((v,i)=>cols[i].r?pr(fv(v),cols[i].w):pd(fv(v),cols[i].w)).join(' ');
+ L.push({t:line(cols.map(c=>c.h)),b:1},{t:'-'.repeat(CW)});rows.forEach(r=>L.push({t:line(r)}));L.push({t:'-'.repeat(CW)});(tots||[]).forEach(r=>L.push({t:line(r),b:1}));return L}
+function mkPdf(L){const top=800,bot=45,P=[];let cur=[],y=top;
+ L.forEach(l=>{const sz=l.sz||8.5,lh=sz*1.4;if(y-lh<bot){P.push(cur);cur=[];y=top}y-=lh;cur.push('BT /'+(l.b?'F2':'F1')+' '+sz+' Tf 40 '+y.toFixed(1)+' Td ('+san(l.t).replace(/[\\()]/g,'\\$&')+') Tj ET')});P.push(cur);
+ const O=[];O[1]='<</Type/Catalog/Pages 2 0 R>>';O[2]='<</Type/Pages/Kids['+P.map((_,i)=>(5+i*2)+' 0 R').join(' ')+']/Count '+P.length+'>>';
+ O[3]='<</Type/Font/Subtype/Type1/BaseFont/Courier/Encoding/WinAnsiEncoding>>';O[4]='<</Type/Font/Subtype/Type1/BaseFont/Courier-Bold/Encoding/WinAnsiEncoding>>';
+ P.forEach((p,i)=>{const c=p.join('\n');O[5+i*2]='<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Resources<</Font<</F1 3 0 R/F2 4 0 R>>>>/Contents '+(6+i*2)+' 0 R>>';O[6+i*2]='<</Length '+c.length+'>>\nstream\n'+c+'\nendstream'});
+ let o='%PDF-1.4\n';const f=[];for(let i=1;i<O.length;i++){f[i]=o.length;o+=i+' 0 obj\n'+O[i]+'\nendobj\n'}
+ const x=o.length;o+='xref\n0 '+O.length+'\n0000000000 65535 f \n';for(let i=1;i<O.length;i++)o+=String(f[i]).padStart(10,'0')+' 00000 n \n';
+ o+='trailer\n<</Size '+O.length+'/Root 1 0 R>>\nstartxref\n'+x+'\n%%EOF';
+ const u=new Uint8Array(o.length);for(let i=0;i<o.length;i++)u[i]=o.charCodeAt(i)&255;return new Blob([u],{type:'application/pdf'})}
+const crcT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc=u=>{let c=-1;for(let i=0;i<u.length;i++)c=crcT[(c^u[i])&255]^(c>>>8);return(c^-1)>>>0};
+function zip(F){const te=new TextEncoder(),parts=[],cd=[];let off=0;
+ F.forEach(f=>{const nb=te.encode(f[0]),db=te.encode(f[1]),cr=crc(db),h=new DataView(new ArrayBuffer(30));
+  h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);h.setUint32(14,cr,true);h.setUint32(18,db.length,true);h.setUint32(22,db.length,true);h.setUint16(26,nb.length,true);
+  parts.push(new Uint8Array(h.buffer),nb,db);
+  const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);c.setUint16(14,0x21,true);c.setUint32(16,cr,true);c.setUint32(20,db.length,true);c.setUint32(24,db.length,true);c.setUint16(28,nb.length,true);c.setUint32(42,off,true);
+  cd.push(new Uint8Array(c.buffer),nb);off+=30+nb.length+db.length});
+ let cl=0;cd.forEach(x=>cl+=x.length);const e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,F.length,true);e.setUint16(10,F.length,true);e.setUint32(12,cl,true);e.setUint32(16,off,true);
+ return new Blob(parts.concat(cd,[new Uint8Array(e.buffer)]),{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+function xlsx(rows,w){const cl=i=>String.fromCharCode(65+i),X=t=>String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])),R='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n',N='http://schemas.openxmlformats.org/';
+ const sd=rows.map((r,ri)=>'<row r="'+(ri+1)+'">'+r.map((c,ci)=>{if(c==null||c==='')return'';const o=typeof c=='object'?c:{v:c},ref=cl(ci)+(ri+1);
+  return typeof o.v=='number'?'<c r="'+ref+'" s="'+(o.s||2)+'"><v>'+o.v+'</v></c>':'<c r="'+ref+'" t="inlineStr" s="'+(o.s||0)+'"><is><t xml:space="preserve">'+X(o.v)+'</t></is></c>'}).join('')+'</row>').join('');
+ return zip([['[Content_Types].xml',R+'<Types xmlns="'+N+'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'],
+ ['_rels/.rels',R+'<Relationships xmlns="'+N+'package/2006/relationships"><Relationship Id="rId1" Type="'+N+'officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+ ['xl/workbook.xml',R+'<workbook xmlns="'+N+'spreadsheetml/2006/main" xmlns:r="'+N+'officeDocument/2006/relationships"><sheets><sheet name="Report" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+ ['xl/_rels/workbook.xml.rels',R+'<Relationships xmlns="'+N+'package/2006/relationships"><Relationship Id="rId1" Type="'+N+'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+N+'officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'],
+ ['xl/styles.xml',R+'<styleSheet xmlns="'+N+'spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="3" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="3" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1" applyNumberFormat="1"/></cellXfs></styleSheet>'],
+ ['xl/worksheets/sheet1.xml',R+'<worksheet xmlns="'+N+'spreadsheetml/2006/main"><cols>'+w.map((x,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+x+'" customWidth="1"/>').join('')+'</cols><sheetData>'+sd+'</sheetData></worksheet>']])}
+function stmt(a){const c=cust(a.c),g=a.t=='g',L=hdr('ACCOUNT STATEMENT',['Printed on: '+fd(today())]);
+ const kv=(k,v,b)=>wr(v,CW-12).forEach((x,i)=>L.push({t:(i?' '.repeat(11):k+' : ')+x,b:b&&!i}));
+ kv('Customer',c.name,1);kv('Mobile  ',c.phone||'-');kv('Address ',c.addr||'-');kv('A/c No  ',a.no,1);
+ kv('Scheme  ',sname(a)+(g?' ('+D.set.ten+' months, Rs.'+fmt(a.m)+' per month)':''));
+ if(g)kv('Instal. ',D.p.filter(x=>x.a==a.id&&x.k=='in').length+' of '+D.set.ten+' received');
+ kv('Opened  ',fd(a.s));kv('Status  ',stt(a)+(a.cd?' on '+fd(a.cd):'')+(a.cr?' - '+a.cr:'')+(a.to?' (to '+a.to+')':''));L.push({t:''});
+ let run=0;const rows=D.p.filter(p=>p.a==a.id).sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:x.id-y.id).map(p=>{run+=sgn(p);return[fd(p.d),p.md,p.n||'',p.k=='in'?p.m:'',p.k=='out'?p.m:'',run]});
+ const ti=rv(a.id,'in'),to=rv(a.id,'out');
+ table([{h:'Date',w:10},{h:'Mode',w:13},{h:'Note',w:16},{h:'Receipt',w:12,r:1},{h:'Payment',w:12,r:1},{h:'Balance',w:13,r:1}],rows,[['','','Total',ti,to,ti-to]]).forEach(x=>L.push(x));
+ L.push({t:''},{t:'This is a computer generated statement.'});return mkPdf(L)}
+function doEx(f){const k=S.k,s=D.set;let title,sub,cols,rows,tots,fn;
+ if(k=='accts'){const A=D.a.filter(a=>(FT=='all'||a.t==FT)&&(FS=='all'||(FS=='act')==(a.st=='open'))),P=D.p.filter(p=>p.d<=AO),by=t=>{const ids=new Set(D.a.filter(a=>a.t==t).map(a=>a.id));return P.filter(p=>ids.has(p.a)).reduce((q,p)=>q+sgn(p),0)},g=by('g'),m=by('s');
+  title='ACCOUNTS REPORT';sub=['As on: '+fd(AO),'Filter: '+(FT=='all'?'All types':FT=='g'?'GSS':'SS')+' / '+(FS=='all'?'Active & closed':FS=='act'?'Active':'Closed'),'GSS balance: Rs.'+fmt(g)+'   SS balance: Rs.'+fmt(m)+'   Grand total: Rs.'+fmt(g+m)];
+  cols=[{h:'A/c No',w:7},{h:'Customer',w:16},{h:'Mobile',w:10},{h:'Type',w:4},{h:'Status',w:11},{h:'Received',w:12,r:1},{h:'Paid',w:12,r:1},{h:'Balance',w:12,r:1}];
+  let ti=0,to=0;rows=A.map(a=>{const c=cust(a.c),i=rv(a.id,'in',AO),o=rv(a.id,'out',AO);ti+=i;to+=o;return[a.no,c.name,c.phone||'-',sn2(a),stt(a),i,o,i-o]});tots=[['','','','','Total',ti,to,ti-to]];fn='accounts-'+AO}
+ else{const d=k=='days',a1=d?today():F,b1=d?today():T,E=D.p.filter(p=>p.d>=a1&&p.d<=b1).sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:x.id-y.id);
+  title=d?"DAY'S COLLECTION":'PAYMENT HISTORY';sub=[d?'Date: '+fd(a1):'Period: '+fd(a1)+' to '+fd(b1)];
+  cols=[{h:'Date',w:10},{h:'Customer',w:16},{h:'A/c No',w:7},{h:'Mode',w:13},{h:'Receipt',w:11,r:1},{h:'Payment',w:11,r:1},{h:'Note',w:14}];
+  let ti=0,to=0;rows=E.map(p=>{const a=acc(p.a);p.k=='in'?ti+=p.m:to+=p.m;return[fd(p.d),cust(a.c).name,a.no,p.md,p.k=='in'?p.m:'',p.k=='out'?p.m:'',p.n||'']});tots=[['','','','Total',ti,to,''],['','','','Net',ti-to,'','']];fn=(d?'days-collection-':'payment-history-')+a1+(d?'':'_to_'+b1)}
+ let blob;
+ if(f=='xlsx'){const B=(r,s)=>r.map(v=>({v:v,s:typeof v=='number'?3:1}));blob=xlsx([[{v:s.shop,s:1}],[{v:title,s:1}]].concat(sub.map(x=>[x]),[[]],[cols.map(c=>({v:c.h,s:1}))],rows,[[]],tots.map(r=>B(r))),cols.map(c=>Math.max(c.w,10)+4))}
+ else blob=mkPdf(hdr(title,sub).concat(table(cols,rows,tots)));
+ S=null;render();saveFile(fn+'.'+f,blob)}
+const TH={gold:['Cream & Gold',{bg:'#fdf6e7',cd:'#f6e7c6',ac:'#b8862b',dk:'#4a3416',md:'#8a6a33',in:'#fffaf0',bt:'#e2bd6b',bd:'#d9bd82',ln:'#ead6a6'}],
+ maroon:['Maroon & Cream',{bg:'#fbf4ea',cd:'#f1dfd3',ac:'#7b1e2b',dk:'#3a1018',md:'#7a4a50',in:'#fffaf5',bt:'#e8c4b8',bd:'#d9b7ae',ln:'#ead3cb'}],
+ red:['Red & White',{bg:'#ffffff',cd:'#fde8e8',ac:'#c62828',dk:'#3b1010',md:'#8a4a4a',in:'#ffffff',bt:'#f7b8b8',bd:'#efb3b3',ln:'#f6d4d4'}],
+ green:['Emerald & Ivory',{bg:'#f8f6ec',cd:'#e3efe4',ac:'#1f6b4a',dk:'#12301f',md:'#4f6b58',in:'#fcfdf7',bt:'#a9d5b8',bd:'#b4cdb9',ln:'#d3e3d6'}]};
+const PGS={setup:vSetup,home:vHome,srch:vSrch,newc:vNewc,editc:vEditc,cust:vCust,past:vPast,newa:vNewa,acc:vAcc,accts:vAccts,days:vDays,hist:vHist,sets:vSets};
+function render(){$('app').innerHTML=head()+'<main>'+PGS[V.p]()+'</main>'+(V.p=='setup'?'':'<div class=nv><button onclick="bk()" aria-label="Back">'+IB+'</button><button onclick="hm()" aria-label="Home">'+IH+'</button></div>')+shHtml()}
+const VER=15,IB='<svg width=20 height=20 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2.2 stroke-linecap=round stroke-linejoin=round><path d="M15 5l-7 7 7 7"/></svg>',IH='<svg width=20 height=20 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2.2 stroke-linecap=round stroke-linejoin=round><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>';
+function applyTheme(){const t=(TH[D.set.theme]||TH.gold)[1],r=document.documentElement.style;for(const k in t)r.setProperty('--'+k,t[k])}
+let trap=true;
+try{history.replaceState({g:0},'');history.pushState({g:1},'')}catch(e){}
+addEventListener('popstate',()=>{if(!trap)return;try{history.pushState({g:1},'')}catch(e){}
+ if(S){S=null;render()}else if(V.p=='home'){S={t:'exit'};render()}else if(V.p!='setup')bk()});
+function exitApp(){trap=false;try{window.close()}catch(e){}try{history.go(-2)}catch(e){}}
+applyTheme();render();
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script></body></html>
